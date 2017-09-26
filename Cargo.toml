@@ -1,0 +1,9 @@
+[package]
+name = "chip8rust"
+version = "0.1.0"
+authors = ["jsultond <j.sultond@gmail.com>"]
+
+[dependencies]
+sdl2 = "0.14"
+rand = "0.3.14"
+piston = "0.32.0"
