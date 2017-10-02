@@ -50,19 +50,20 @@ impl screen {
     }
 
     pub fn draw_array(&mut self, arrays: &Box<[u8;8* 4]>){
-	for row in 0..4 {
+		for row in 0..4 {
     		for col in 0..8{
         		for bit in 0..8 {
-            			if (arrays[row * col + ] & (0b1 << bit)) > 0{
-                			if (x * y + x)
-                    				self.put(bit as i32, y as i32);
-                    			}else {
-                				self.put((x + bit) as i32, y as i32);
-                    			}
-            			}
+            		if  (arrays[row * col + col] & (0b1 << bit)) > 0{
+                		if (row * col + row) == 1{
+                    		self.put(bit as i32, col as i32);
+                    	}else {
+                			self.put((row+ bit) as i32, col as i32);
+                    	}
+            		}
         		}
     		}
-	}
+		}
         self.present();
     }
 }
+

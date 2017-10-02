@@ -1,5 +1,6 @@
 use super::sdl2;
 use super::screen;
+use super::keyboard::Keyboard;
 
 use std::io::Read;
 use super::rand::{thread_rng, Rng};
@@ -41,7 +42,7 @@ pub struct Cpu {
 	    stack: Box<[u16; 16]>,
 	    sp: usize,
 	    screen: screen::screen,
-	    keyboard: keyboard,
+	    keys: Keyboard,
 }
 
 impl Cpu{
@@ -62,7 +63,7 @@ impl Cpu{
         	stack: Box::new([0; 16]),
         	sp: 0,
         	screen: screen::screen::new(&sdl_context),
-        	keys: keyboard::keyboard::new(&sdl_context),
+        	keys: Keyboard::new(&sdl_context),
        	}
     }
 
@@ -208,7 +209,7 @@ impl Cpu{
            			},
 
         			0x000E => {
-            				let vx = (self.opcode & 0x0F00) >> 8; 
+            				let vx = ((self.opcode & 0x0F00) >> 8) as usize;
             				let val = self.vreg[vx];
             				if val & 0x80 > 0 {
                					self.vreg[0xF] = 1;
@@ -289,7 +290,7 @@ impl Cpu{
             		0x009E => {
                			// 9E - SKP Vx
                 		// Skip next instruction if key with the value of Vx is pressed
-                		if(self.keyboard
+                		//
                 	},
             		0x00A1 => {
                 		// A1 - SKPN Vx

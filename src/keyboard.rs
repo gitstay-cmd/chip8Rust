@@ -5,6 +5,8 @@ use super::sdl2::event::Event;
 use super::sdl2::keyboard::Keycode;
 use super::sdl2;
 
+const DELAY: u64 = 2;
+
 enum Keys {
     key_1 = 0,
     key_2,
@@ -24,9 +26,8 @@ enum Keys {
     key_V,
 }
 
-const DELAY: u64 = 2;
 
-pub struct keyboard {
+pub struct Keyboard {
     event_pump: sdl2::EventPump,
     pub keys: [bool; 16],
     last_pressed: u8,
@@ -36,82 +37,87 @@ pub struct keyboard {
 
 impl Keyboard {
     
-    pub fn new(sdl_context: &sdl2::Sdl) -> keyboard {
+    pub fn new(sdl_context: &sdl2::Sdl) -> Keyboard {
         
-        keyboard {
+        Keyboard {
             event_pump: sdl_context.event_pump().unwrap(),
             keys: [false; 16],
             last_pressed: 0,
             used: false,
-            close: false;
+            close: false,
         }
         
     }
 
     pub fn handle_press(&mut self) -> u8{
-        for event in self.event_pump.poll_iter() {
+
+		let events: Vec<Event> = self.event_pump.poll_iter().collect();
+		
+        for event in events {
             match event {
                 Event::Quit { .. } => {
                     self.close = true;
                 }
-                Event::KeyDown { keycode: Some(Keycode::Num1), .. } => {key_pressed(key_1, true)},
-                Event::KeyDown { keycode: Some(Keycode::Num2), .. } => {key_pressed(key_2, true)},
-                Event::KeyDown { keycode: Some(Keycode::Num3), .. } => {key_pressed(key_3, true)},
-                Event::KeyDown { keycode: Some(Keycode::Num4), .. } => {key_pressed(key_4, true)},
-                Event::KeyDown { keycode: Some(Keycode::Q), .. } => {key_pressed(key_Q, true)},
-                Event::KeyDown { keycode: Some(Keycode::W), .. } => {key_pressed(key_W, true)},
-                Event::KeyDown { keycode: Some(Keycode::E), .. } => {key_pressed(key_E, true)},
-                Event::KeyDown { keycode: Some(Keycode::R), .. } => {key_pressed(key_R, true)},
-                Event::KeyDown { keycode: Some(Keycode::A), .. } => {key_pressed(key_A, true)},
-                Event::KeyDown { keycode: Some(Keycode::S), .. } => {key_pressed(key_S, true)},
-                Event::KeyDown { keycode: Some(Keycode::D), .. } => {key_pressed(key_D, true)},
-                Event::KeyDown { keycode: Some(Keycode::F), .. } => {key_pressed(key_F, true)},
-                Event::KeyDown { keycode: Some(Keycode::Z), .. } => {key_pressed(key_Z, true)},
-                Event::KeyDown { keycode: Some(Keycode::X), .. } => {key_pressed(key_X, true)},
-                Event::KeyDown { keycode: Some(Keycode::C), .. } => {key_pressed(key_C, true)},
-                Event::KeyDown { keycode: Some(Keycode::V), .. } => {key_pressed(key_V, true)},
-                Event::KeyUp { keycode: Some(Keycode::Num1), .. } => {key_pressed(key_1, false)},
-                Event::KeyUp { keycode: Some(Keycode::Num2), .. } => {key_pressed(key_2, false)},
-                Event::KeyUp { keycode: Some(Keycode::Num3), .. } => {key_pressed(key_3, false)},
-                Event::KeyUp { keycode: Some(Keycode::Num4), .. } => {key_pressed(key_4, false)},
-                Event::KeyUp { keycode: Some(Keycode::Q), .. } => {key_pressed(key_Q, false)},
-                Event::KeyUp { keycode: Some(Keycode::W), .. } => {key_pressed(key_W, false)},
-                Event::KeyUp { keycode: Some(Keycode::E), .. } => {key_pressed(key_E, false)},
-                Event::KeyUp { keycode: Some(Keycode::R), .. } => {key_pressed(key_R, false)},
-                Event::KeyUp { keycode: Some(Keycode::A), .. } => {key_pressed(key_A, false)},
-                Event::KeyUp { keycode: Some(Keycode::S), .. } => {key_pressed(key_S, false)},
-                Event::KeyUp { keycode: Some(Keycode::D), .. } => {key_pressed(key_D, false)},
-                Event::KeyUp { keycode: Some(Keycode::F), .. } => {key_pressed(key_F, false)},
-                Event::KeyUp { keycode: Some(Keycode::Z), .. } => {key_pressed(key_Z, false)},
-                Event::KeyUp { keycode: Some(Keycode::X), .. } => {key_pressed(key_X, false)},
-                Event::KeyUp { keycode: Some(Keycode::C), .. } => {key_pressed(key_C, false)},
-                Event::KeyUp { keycode: Some(Keycode::V), .. } => {key_pressed(key_V, false)},
-                _ =>{},
+                Event::KeyDown { keycode: Some(Keycode::Num1), .. } => {self.key_pressed(Keys::key_1 as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::Num2), .. } => {self.key_pressed(Keys::key_2 as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::Num3), .. } => {self.key_pressed(Keys::key_3 as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::Num4), .. } => {self.key_pressed(Keys::key_4 as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::Q), .. } => {self.key_pressed(Keys::key_Q as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::W), .. } => {self.key_pressed(Keys::key_W as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::E), .. } => {self.key_pressed(Keys::key_E as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::R), .. } => {self.key_pressed(Keys::key_R as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::A), .. } => {self.key_pressed(Keys::key_A as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::S), .. } => {self.key_pressed(Keys::key_S as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::D), .. } => {self.key_pressed(Keys::key_D as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::F), .. } => {self.key_pressed(Keys::key_F as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::Z), .. } => {self.key_pressed(Keys::key_Z as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::X), .. } => {self.key_pressed(Keys::key_X as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::C), .. } => {self.key_pressed(Keys::key_C as u8, true)},
+                Event::KeyDown { keycode: Some(Keycode::V), .. } => {self.key_pressed(Keys::key_V as u8, true)},
+                Event::KeyUp { keycode: Some(Keycode::Num1), .. } => {self.key_pressed(Keys::key_1 as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::Num2), .. } => {self.key_pressed(Keys::key_2 as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::Num3), .. } => {self.key_pressed(Keys::key_3 as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::Num4), .. } => {self.key_pressed(Keys::key_4 as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::Q), .. } => {self.key_pressed(Keys::key_Q as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::W), .. } => {self.key_pressed(Keys::key_W as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::E), .. } => {self.key_pressed(Keys::key_E as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::R), .. } => {self.key_pressed(Keys::key_R as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::A), .. } => {self.key_pressed(Keys::key_A as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::S), .. } => {self.key_pressed(Keys::key_S as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::D), .. } => {self.key_pressed(Keys::key_D as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::F), .. } => {self.key_pressed(Keys::key_F as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::Z), .. } => {self.key_pressed(Keys::key_Z as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::X), .. } => {self.key_pressed(Keys::key_X as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::C), .. } => {self.key_pressed(Keys::key_C as u8, false)},
+                Event::KeyUp { keycode: Some(Keycode::V), .. } => {self.key_pressed(Keys::key_V as u8, false)},
+                _ =>{return 1;},
             }
         }
+        0
     }
 
-	pub fn wait(&mut self) -> u8{
+	pub fn wait(&mut self) -> u8 {
+
     	self.used = false;
 
     	loop {
         	
         	self.handle_press();
         	
-        	if(self.used){
+        	if self.used {
             	break;
         	}
 
-        	sleep(Duration::from_millis(DELAY)):
+        	sleep(Duration::from_millis(DELAY));
         	
     	}
     	
-    	self.last_pressed;
+    	self.last_pressed
 	}
 	
-    fn key_pressed(&mut self, key: Keys, pressed: bool){
+    fn key_pressed(&mut self, key: u8, pressed: bool){
         self.keys[key as usize] = pressed;
-        self.last_pressed = key as u8;
+        self.last_pressed = key;
         self.used = true;
     }
 }
